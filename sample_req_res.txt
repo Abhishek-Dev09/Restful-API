@@ -1,0 +1,745 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////Registration////////////////////////////////////////////////////
+////////
+
+postman sample data for registration: (refer registration.png)
+    Method:post
+    endpoint : localhost/8083/user/register      ---( 8083 you can replace it with your own port number)
+    
+    Request:
+        {
+        "firstName":"trisha",
+        "lastName":"singh",
+        "email": "trisha.singh@xyz.com",
+        "password":"itssecret",
+        "uniqueId":"unique33",
+        "organisationName":"great organisation"
+         }
+
+    Response: 
+    {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5-----(YOUR TOKEN)-----vExEg",
+    "message": "thank you ! you have sucessfully resisterd"
+    }
+        
+  case : 1 => if you will register using same email Id but different details then-
+         
+    Request:  ////here emailId is same as previous registerd user (refer sameemailId.png)
+        {
+        "firstName":"aman",
+        "lastName":"kashyap",
+        "email": "trisha.singh@xyz.com",
+        "password":"itssecret",
+        "uniqueId":"unique55",
+        "organisationName":"great organisation"
+        }
+
+    Response:
+        {
+         "message": "opps! you have already registerd"
+        }
+    
+    case :2 => if entered data is not valid then-
+    (refer - error_array.png)
+    Request:     ////here email id is not proper (  you can check for entering invalid name ,uniqueIdsame etc)
+        {
+        "firstName":"aman",
+        "lastName":"kashyap",
+        "email": "trisha.singh",   
+        "password":"itssecret",
+        "uniqueId":"unique55",
+        "organisationName":"great organisation"
+        }
+
+    Response : an array of error message
+        {
+        "errors": [
+            {
+                "value": "trisha.singh",
+                "msg": "enter valid mail",  // because the entered email was not valid
+                "param": "email",
+                "location": "body"
+            }
+        ]
+        }
+
+//////////////////////////////////////////// Login ///////////////////////////////////////////////////////
+
+sample data for login - 
+    Endpoint: localhost/8083/user/login
+    Method: Post
+    Request: ( refer login.png)
+      {
+        "email": "trisha.singh@xyz.com",
+        "password":"itssecret"
+      }
+    Response:
+    {
+        "token": "eyJhbGciOiJIUzI1NiIn (-----your token------) gyMTE1fQ.tJPcKHqCG9cr9TT1HsPDAHYiUEXDw0L3Jm4vJ6I3_J0",
+        "message": "copy the above token and add to the header while geting your profile"
+    }
+
+case 1 : if email incorrect email id is entered or unregistered emailId (refer incorect_email.png)
+    Request: ///// here you can see email Id is different and it's unregistered
+    {
+        "email": "tania.singh@xyz.com",
+        "password":"itssecret"
+    }
+    Response:
+    {
+    "message": "oops! user does not exist"
+    }
+
+case 2 : if password is incorrect (refer incorrect_password.png)
+    Request: ///// here you can see the password is incorrect
+     {
+        "email": "trisha.singh@xyz.com",
+        "password":"its_incorrect"
+      }
+    Response:
+    {
+    "message": " oops! incorrect password!"
+    }
+
+///////////////////////////////////////////  Get user profile //////////////////////////////////////////////
+
+endpoint to get user profile localhost/8083/user/yourprofile
+
+Method:Get
+add token to your header and hit send (refer user_profile.png) 
+Response:
+{
+    "createdAt": "2020-12-19T08:01:35.861Z",
+    "_id": "5fddbe8948982035c835b3cf",
+    "firstName": "trisha",
+    "lastName": "singh",
+    "email": "trisha.singh@xyz.com",
+    "password": "$2a$10$aLkTnpuxPUS4fstpCVE.Lu7krg7jO/nVpwaoMaUmf.G.56ZwoNljW",
+    "uniqueId": "unique33",
+    "organisationName": "great organisation",
+    "__v": 0
+}
+
+case 1 : if you just put endpoint localhost/8083/user/yourprofile without logged in
+Request : Get
+Response:
+ {
+    "message": "Auth Error"
+ }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////employee registration //////////////////////////////////////////////////////
+/////////////////////////////////check emp_portal in screenshots folder for  testing screenshots/////////////////////////////////
+Method:Post
+endpoint: localhost/8083/emp/register
+Request:
+{
+    "empName":"volpe",
+    "password":"i_love_vlogging",
+    "uniqueofficialId": "kolkata_153c"
+}
+Response:
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cC(------your token-----)P1nTdTzxMSawI",
+    "message":"sucessfully registerd " 
+}
+
+case : 1 => if you will register using same uniqueofficialId Id but different details then-
+    (refer : existing_employee.png)    
+    Request:  ////here uniqueofficialId is same as previous registerd user (refer sameemailId.png)
+            {
+            "empName":"anjali",
+            "password":"i_love_music",
+            "uniqueofficialId": "kolkata_153c"
+            }
+    Response:
+            {
+            "message": "oops! you are an existing employee.Please contact admin for credentials"
+            }
+
+case :2 => if entered data is not valid then-
+   
+    Request: //(refer:invalid_password_registration.png)
+            {
+            "empName":"anjali",
+            "password":"i_dk",                 //////// -here you can see that the password's length is less than 5
+            "uniqueofficialId": "kolkata_153c"
+            }
+    Response:{
+    "errors": [
+        {
+            "value": "i_dk",
+            "msg": "it's too short",
+            "param": "password",
+            "location": "body"
+        }
+         ]
+      }
+
+
+
+//////////////////////////////////////// Employee login ///////////////////////////////////////////////////
+
+
+
+Endpoint: localhost/8083/emp/login
+    Method: Post
+    Request: ( refer login_emp.png)
+            {
+                 "uniqueofficialId": "kolkata_153c",
+                 "password":"i_love_vlogging"
+            }
+    Response:{
+                "message": "verify the generated token to see user profile",
+                "token": "eyJhbGciOiJIU-------("some random token")------OiI1ZmRkZTVkNzYzMzQ4Y2IYOTyZbeiLj1Ppd_iibirNKYkFXrDmk9wjRbCU"
+                }
+ case 1 : if  incorrect uniqueofficialId id is entered or unregistered uniqueofficialId (refer invalid_credentials.png)
+    Method:Post ///here mumbai_153c is incorrect Id
+    Request: 
+            {
+                 "uniqueofficialId": "mumbai_153c",
+                 "password":"i_love_vlogging"
+            }
+    Response:{
+                "message": "oops! employee does not exist"
+             }
+        
+ case 2 : if password is incorrect (refer incorrect_password.png)
+    Methos:Post  ///here the password is incorrect it should be "i_love_vlogging" but it is "i_love_photo"
+    Request: 
+           {
+                 "uniqueofficialId": "kolkata_153c",
+                 "password":"i_love_photo"
+           }
+    Response:
+            {
+                "message": " oops! incorrect password!"
+
+
+            }  
+           
+////////////////////////////////////Getting userList ///////////////////////////////////////////
+
+
+
+endpoint to get user profile localhost/8083/user/userList
+
+Method:Get
+add token to your header and hit send (refer get_userlist.png) 
+Response:(refer - get_userlist.png to see how to add header)
+
+{
+    ////you will be getting an array od all userList
+}
+
+case 1 : if you just put endpoint localhost/8083/emp/userList without logged in
+Request : Get
+Response:
+ {
+    "message": "Auth Error"
+ }
+
+
+
+ //////////////////////////////////////////// searching by first-name/////////////////////////////////
+ 
+
+
+ Request:Get (refer search_fname.png)
+ Endpoint: localhost:8083/emp/userList?fname=vishal (query = fname=vishal it means to search a person whose first name is vishal)
+ 
+ Response : [
+    {
+        "createdAt": "2020-12-17T12:04:57.921Z",
+        "_id": "5fdb4c212bc4f2869a2bec8b",
+        "firstName": "vishal",
+        "lastName": "kumar",
+        "email": "vishal@gmail.com",
+        "password": "$2a$10$AB9LzqNLgq.NzhG8ggcePek65Gr.WjOYdPjEpD249nVMHn.6cOse.",
+        "uniqueId": "vishal123",
+        "organisationName": "hx",
+        "__v": 0
+    }
+]
+
+case - 1: if you search for the first name which does not exist then it will return an empty array
+
+    Request:Get (refer search_firstname_na.png)
+    Endpoint: localhost:8083/emp/userList?fname=aman 
+    Response:[]
+
+
+
+////////////////////////////////////// Search by lastName ////////////////////////////////////////////////
+
+
+
+Request:Get (refer search_lastname.png)
+Endpoint: localhost:8083/emp/userList?lname=singh  search user with last name = singh
+Response : [
+    {
+        "createdAt": "2020-12-19T08:01:35.861Z",
+        "_id": "5fddbe8948982035c835b3cf",
+        "firstName": "trisha",
+        "lastName": "singh",
+        "email": "trisha.singh@xyz.com",
+        "password": "$2a$10$aLkTnpuxPUS4fstpCVE.Lu7krg7jO/nVpwaoMaUmf.G.56ZwoNljW",
+        "uniqueId": "unique33",
+        "organisationName": "great organisation",
+        "__v": 0
+    }
+]
+
+case - 1: if you search for the last name which does not exist then it will return an empty array
+
+    Request:Get (refer search_lastname_na.png)
+    Endpoint: localhost:8083/emp/userList?lname=jhones
+    Response:[]
+
+
+
+/////////////////////////////Search by employee Id///////////////////////////////////
+
+
+
+Request:Get (refer search_empid.png)
+Endpoint: localhost:8083/emp/userList?empid=monu123  search user with employee id  = monu123
+Response:[
+    {
+        "createdAt": "2020-12-17T12:24:48.069Z",
+        "_id": "5fdb4e121906f9ac6b6dfd5d",
+        "firstName": "monu",
+        "lastName": "kumar",
+        "email": "monu@gmail.com",
+        "password": "$2a$10$nEbVX4t/nhmlauHK4MpAWezuxdrQvVLfjsnP24r7XGLcZ9uUoEc6y",
+        "uniqueId": "monu123",
+        "organisationName": "hx",
+        "__v": 0
+    }
+]
+
+case - 1: if you search for the employee id which does not exist then it will return an empty array
+
+    Request:Get (refer search_employeeid_na.png)
+    Endpoint: localhost:8083/emp/userList?empid=kolkalta1234
+    Response:[]
+
+
+
+/////////////////////////////////// sorting by firstName asc and desc both//////////////////////////
+
+
+Request: Get
+endpoint: localhost:8083/emp/userList?sortBy=firstName:asc  //here asc means ascending order
+Response:[     //got response for sorted by firstname ascending order  //see (sorting_fname_asc.png)
+    {
+        "createdAt": "2020-12-17T12:24:48.069Z",
+        "_id": "5fdb4e121906f9ac6b6dfd5d",
+        "firstName": "monu",    //see order
+        "lastName": "kumar",
+        "email": "monu@gmail.com",
+        "password": "$2a$10$nEbVX4t/nhmlauHK4MpAWezuxdrQvVLfjsnP24r7XGLcZ9uUoEc6y",
+        "uniqueId": "monu123",
+        "organisationName": "hx",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-17T08:58:30.146Z",
+        "_id": "5fdb1e6d0099e22645a2bad8",
+        "firstName": "oindra",    //see order  
+        "lastName": "dutta",
+        "email": "oindra@gmail.com",
+        "password": "$2a$10$duvXs28KcAcQS9h0/fWaA.s0w2w2zacywuTnv60tSLd9Z8xeUdHZy",
+        "uniqueId": "oindra123",
+        "organisationName": "hx",
+        "__v": 0
+    }
+    ,...........etc etc.........]
+
+Request: Get
+endpoint: localhost:8083/emp/userList?sortBy=firstName:dsc  //here dsc means ascending order
+Response:    //got response for sorted by firstname descending order (see sorting_firstname_dsc.png)
+
+    {
+        "createdAt": "2020-12-17T12:04:57.921Z",
+        "_id": "5fdb4c212bc4f2869a2bec8b",
+        "firstName": "vishal", // descending alphabetical order
+        "lastName": "kumar",
+        "email": "vishal@gmail.com",
+        "password": "$2a$10$AB9LzqNLgq.NzhG8ggcePek65Gr.WjOYdPjEpD249nVMHn.6cOse.",
+        "uniqueId": "vishal123",
+        "organisationName": "hx",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-19T08:01:35.861Z",
+        "_id": "5fddbe8948982035c835b3cf",
+        "firstName": "trisha",    // descending alphabetical order
+        "lastName": "singh",
+        "email": "trisha.singh@xyz.com",
+        "password": "$2a$10$aLkTnpuxPUS4fstpCVE.Lu7krg7jO/nVpwaoMaUmf.G.56ZwoNljW",
+        "uniqueId": "unique33",
+        "organisationName": "great organisation",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-17T08:16:44.534Z",
+        "_id": "5fdb175f32316cd73a993355",
+        "firstName": "soumik", // descending alphabetical order
+        "lastName": "das",
+        "email": "soumik@gmail.com",
+        "password": "$2a$10$BKmkCaZ2Z1stouIWuGs18u7j.TB2w9U7E2AdeOnIN5GyVAdBwW2/W",
+        "uniqueId": "soumik123",
+        "organisationName": "hx",
+        "__v": 0
+    }, .......
+    ........
+    .......]
+
+
+/////////////////////////////////////Sorting by last name both ascending and descending order////////////////////////
+
+
+
+Request: Get
+endpoint: localhost:8083/emp/userList?sortBy=lastName:asc  //here asc means ascending order
+Response:{
+        "createdAt": "2020-12-17T08:58:30.146Z",
+        "_id": "5fdb1e6d0099e22645a2bad8",
+        "firstName": "oindra",
+        "lastName": "dutta",           //ascending alphabetical order
+        "email": "oindra@gmail.com",
+        "password": "$2a$10$duvXs28KcAcQS9h0/fWaA.s0w2w2zacywuTnv60tSLd9Z8xeUdHZy",
+        "uniqueId": "oindra123",
+        "organisationName": "hx",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-18T17:15:19.825Z",
+        "_id": "5fdce4abaa9195d14f2e2d81",
+        "firstName": "shreya",
+        "lastName": "khatri",                         //////ascending alphabetical order
+        "email": "khatri.shreya@gmail.com",
+        "password": "$2a$10$WIN8Vsv1/J2XCLBeTmRTFe9TM4zVwSUsU81icexHX3uZGkOyVtHP2",
+        "uniqueId": "shreya153c",
+        "organisationName": "college_student",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-17T12:04:57.921Z",
+        "_id": "5fdb4c212bc4f2869a2bec8b",
+        "firstName": "vishal",
+        "lastName": "kumar",     ////////ascending alphabetical order
+        "email": "vishal@gmail.com",
+        "password": "$2a$10$AB9LzqNLgq.NzhG8ggcePek65Gr.WjOYdPjEpD249nVMHn.6cOse.",
+        "uniqueId": "vishal123",
+        "organisationName": "hx",
+        "__v": 0
+    },....................................
+    .................................................etc etc ....]
+
+Request: Get
+endpoint: localhost:8083/emp/userList?sortBy=lastName:dsc  //here dsc means descending order  (sorting_lastName_dsc.png)
+Response:[
+    {
+        "createdAt": "2020-12-19T08:01:35.861Z",
+        "_id": "5fddbe8948982035c835b3cf",
+        "firstName": "trisha",
+        "lastName": "singh",      ///descending alphabetical order
+        "email": "trisha.singh@xyz.com",
+        "password": "$2a$10$aLkTnpuxPUS4fstpCVE.Lu7krg7jO/nVpwaoMaUmf.G.56ZwoNljW",
+        "uniqueId": "unique33",
+        "organisationName": "great organisation",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-17T12:04:57.921Z",
+        "_id": "5fdb4c212bc4f2869a2bec8b",
+        "firstName": "vishal",
+        "lastName": "kumar",     ///descending alphabetical order
+        "email": "vishal@gmail.com",
+        "password": "$2a$10$AB9LzqNLgq.NzhG8ggcePek65Gr.WjOYdPjEpD249nVMHn.6cOse.",
+        "uniqueId": "vishal123",
+        "organisationName": "hx",
+        "__v": 0
+    },.........................
+    .................
+    ........etc etc.........]
+
+
+////////////////////////////////Sorting by emailId both ascending and descending order////////////////////////////
+
+
+Request: Get
+endpoint: localhost:8083/emp/userList?sortBy=emailId:asc  // asc = ascending alphabetical order
+Response:  {
+        "createdAt": "2020-12-16T20:56:37.483Z",
+        "_id": "5fda74ae345a5ae7ae28a017",
+        "firstName": "shubham",
+        "lastName": "divesh",
+        "email": "divesh.shubham@xyz.com",         // ascending alphabetical order
+        "password": "$2a$10$SYHjRTfcFXR.GG0GEVHgsuIzSpG6/EuTYVjkrxu8l9.ZmyauoRJTC",
+        "uniqueId": "emp123",
+        "organisationName": "hyperxchange",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-18T17:15:19.825Z",
+        "_id": "5fdce4abaa9195d14f2e2d81",
+        "firstName": "shreya",
+        "lastName": "khatri",
+        "email": "khatri.shreya@xyz.com",           // ascending alphabetical order
+        "password": "$2a$10$WIN8Vsv1/J2XCLBeTmRTFe9TM4zVwSUsU81icexHX3uZGkOyVtHP2",
+        "uniqueId": "shreya153c",
+        "organisationName": "college_student",
+        "__v": 0
+    },.........................etc etc etc.................]
+
+Request: Get
+endpoint: localhost:8083/emp/userList?sortBy=emailId:dsc  // dsc = descending alphabetical order (sorting_email_desc.png)
+Response: {
+        "createdAt": "2020-12-17T12:04:57.921Z",
+        "_id": "5fdb4c212bc4f2869a2bec8b",
+        "firstName": "vishal",
+        "lastName": "kumar",
+        "email": "vishal@gmail.com",     //descending alphabetical order
+        "password": "$2a$10$AB9LzqNLgq.NzhG8ggcePek65Gr.WjOYdPjEpD249nVMHn.6cOse.",
+        "uniqueId": "vishal123",
+        "organisationName": "hx",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-19T08:01:35.861Z",
+        "_id": "5fddbe8948982035c835b3cf",
+        "firstName": "trisha",
+        "lastName": "singh",
+        "email": "trisha.singh@xyz.com",    //descending alphabetical order
+        "password": "$2a$10$aLkTnpuxPUS4fstpCVE.Lu7krg7jO/nVpwaoMaUmf.G.56ZwoNljW",
+        "uniqueId": "unique33",
+        "organisationName": "great organisation",
+        "__v": 0
+    }, ........................etc etc etc etc...........]
+
+
+
+    /////////////////////////////////sorting by employeeId both ascending and descending order///////////////////////////
+  
+  
+  
+  Request : Get
+  endpoint : localhost:8083/emp/userList?sortBy=employeeId:asc //here asc means alphabetical ascending order
+  Response: {               (sorting_empid_desc.png)
+        "createdAt": "2020-12-17T08:16:44.534Z",
+        "_id": "5fdb147532316cd73a993354",
+        "firstName": "shubham",
+        "lastName": "divesh",
+        "email": "shubham@######.com",
+        "password": "$2a$10$dUPbgEwyb9x361T.Sj.X8uohT/1kr1CosT8cMc5fqsCFiNIwZnIdm",
+        "uniqueId": "emp123",                   //ascending aplphabatical order
+        "organisationName": "###############",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-17T12:24:48.069Z",
+        "_id": "5fdb4e121906f9ac6b6dfd5d",
+        "firstName": "monu",
+        "lastName": "kumar",
+        "email": "monu@gmail.com",
+        "password": "$2a$10$nEbVX4t/nhmlauHK4MpAWezuxdrQvVLfjsnP24r7XGLcZ9uUoEc6y",
+        "uniqueId": "monu123",                //ascending aplphabatical order
+        "organisationName": "hx",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-17T08:58:30.146Z",
+        "_id": "5fdb1e6d0099e22645a2bad8",
+        "firstName": "oindra",
+        "lastName": "dutta",
+        "email": "oindra@gmail.com",
+        "password": "$2a$10$duvXs28KcAcQS9h0/fWaA.s0w2w2zacywuTnv60tSLd9Z8xeUdHZy",
+        "uniqueId": "oindra123",              //ascending aplphabatical order
+        "organisationName": "hx",
+        "__v": 0
+    },.....................etc etc etc.....................]
+
+Request:Get
+Endpoint: localhost:8083/emp/userList?sortBy=employeeId:dsc  (dsc means descending alphabetical order)
+Response: [
+    {
+        "createdAt": "2020-12-17T12:04:57.921Z",
+        "_id": "5fdb4c212bc4f2869a2bec8b",
+        "firstName": "vishal",
+        "lastName": "kumar",
+        "email": "vishal@gmail.com",
+        "password": "$2a$10$AB9LzqNLgq.NzhG8ggcePek65Gr.WjOYdPjEpD249nVMHn.6cOse.",
+        "uniqueId": "vishal123",       //descending alphabatical order
+        "organisationName": "hx",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-19T08:01:35.861Z",
+        "_id": "5fddbe8948982035c835b3cf",
+        "firstName": "trisha",
+        "lastName": "singh",
+        "email": "trisha.singh@xyz.com",
+        "password": "$2a$10$aLkTnpuxPUS4fstpCVE.Lu7krg7jO/nVpwaoMaUmf.G.56ZwoNljW",
+        "uniqueId": "unique33",          //descending alphabatical order
+        "organisationName": "great organisation",
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-17T08:16:44.534Z",
+        "_id": "5fdb175f32316cd73a993355",
+        "firstName": "soumik",
+        "lastName": "das",
+        "email": "soumik@gmail.com",
+        "password": "$2a$10$BKmkCaZ2Z1stouIWuGs18u7j.TB2w9U7E2AdeOnIN5GyVAdBwW2/W",
+        "uniqueId": "soumik123",                   //descending alphabatical order
+        "organisationName": "hx",
+        "__v": 0
+    },
+    {........................etc etc etc......................}]
+
+
+
+    //////////////////////////sorting by organisation name in both ascending and descending order////////////////////////////////////
+
+
+
+    Request: Get
+    endpoint: localhost:8083/emp/userList?sortBy=orgName:asc   asc means alphabetical ascending order
+    Response:[ 
+    {
+        "createdAt": "2020-12-18T17:15:19.825Z",
+        "_id": "5fdce4abaa9195d14f2e2d81",
+        "firstName": "shreya",
+        "lastName": "khatri",
+        "email": "khatri.shreya@gmail.com",
+        "password": "$2a$10$WIN8Vsv1/J2XCLBeTmRTFe9TM4zVwSUsU81icexHX3uZGkOyVtHP2",
+        "uniqueId": "shreya153c",
+        "organisationName": "college_student", //ascending aplphabetical order
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-19T08:01:35.861Z",
+        "_id": "5fddbe8948982035c835b3cf",
+        "firstName": "trisha",
+        "lastName": "singh",
+        "email": "trisha.singh@xyz.com",
+        "password": "$2a$10$aLkTnpuxPUS4fstpCVE.Lu7krg7jO/nVpwaoMaUmf.G.56ZwoNljW",
+        "uniqueId": "unique33",
+        "organisationName": "great organisation", //ascending aplphabetical order
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-17T08:16:44.534Z",
+        "_id": "5fdb175f32316cd73a993355",
+        "firstName": "soumik",
+        "lastName": "das",
+        "email": "soumik@gmail.com",
+        "password": "$2a$10$BKmkCaZ2Z1stouIWuGs18u7j.TB2w9U7E2AdeOnIN5GyVAdBwW2/W",
+        "uniqueId": "soumik123",
+        "organisationName": "hx",    //ascending aplphabetical order
+        "__v": 0
+    },
+    {..........................etc etc etc.............}]
+
+    Request: Get
+    endpoint: localhost:8083/emp/userList?sortBy=orgName:dsc      (sorting_orgname_dsc.png)
+    Response:
+    [{...........................etc....
+    ...........................etc....etc
+    {
+        "createdAt": "2020-12-17T12:24:48.069Z",
+        "_id": "5fdb4e121906f9ac6b6dfd5d",
+        "firstName": "monu",
+        "lastName": "kumar",
+        "email": "monu@gmail.com",
+        "password": "$2a$10$nEbVX4t/nhmlauHK4MpAWezuxdrQvVLfjsnP24r7XGLcZ9uUoEc6y",
+        "uniqueId": "monu123",
+        "organisationName": "hx", //descending aplphabetical order
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-19T08:01:35.861Z",
+        "_id": "5fddbe8948982035c835b3cf",
+        "firstName": "trisha",
+        "lastName": "singh",
+        "email": "trisha.singh@xyz.com",
+        "password": "$2a$10$aLkTnpuxPUS4fstpCVE.Lu7krg7jO/nVpwaoMaUmf.G.56ZwoNljW",
+        "uniqueId": "unique33",
+        "organisationName": "great organisation", //descending aplphabetical order
+        "__v": 0
+    },
+    {
+        "createdAt": "2020-12-18T17:15:19.825Z",
+        "_id": "5fdce4abaa9195d14f2e2d81",
+        "firstName": "shreya",
+        "lastName": "khatri",
+        "email": "khatri.shreya@gmail.com",
+        "password": "$2a$10$WIN8Vsv1/J2XCLBeTmRTFe9TM4zVwSUsU81icexHX3uZGkOyVtHP2",
+        "uniqueId": "shreya153c",
+        "organisationName": "college_student", //descending aplphabetical order
+        "__v": 0
+    }
+]}]
+
+
+
+///////////////////////////////////// Pagination ///////////////////////////////////////////////////////
+
+
+Request:Get
+Endpoint: localhost:8083/emp/userList?page=2&limit=2    // here page means the current page out of total page  and limit means number of user in a 1 page
+Response:{    // total pages are 5 and 2 users are displaying in a page and cureent page is 2.
+    "userD": [
+        {
+            "createdAt": "2020-12-17T08:16:44.534Z",
+            "_id": "5fdb147532316cd73a993354",
+            "firstName": "shubham",
+            "lastName": "divesh",
+            "email": "shubham@gmail.com",
+            "password": "$2a$10$dUPbgEwyb9x361T.Sj.X8uohT/1kr1CosT8cMc5fqsCFiNIwZnIdm",
+            "uniqueId": "emp123",
+            "organisationName": "##########",
+            "__v": 0
+        },
+        {
+            "createdAt": "2020-12-17T08:16:44.534Z",
+            "_id": "5fdb175f32316cd73a993355",
+            "firstName": "soumik",
+            "lastName": "das",
+            "email": "soumik@gmail.com",
+            "password": "$2a$10$BKmkCaZ2Z1stouIWuGs18u7j.TB2w9U7E2AdeOnIN5GyVAdBwW2/W",
+            "uniqueId": "soumik123",
+            "organisationName": "hx",
+            "__v": 0
+        }
+    ],
+    "totalPages": 5,
+    "currentPage": 2
+}
+
+Request:Get
+Endpoint: localhost:8083/emp/userList?page=3&limit=1   (pagination.png)
+Response:{
+    "userD": [
+        {
+            "createdAt": "2020-12-17T08:16:44.534Z",
+            "_id": "5fdb147532316cd73a993354",
+            "firstName": "shubham",
+            "lastName": "divesh",
+            "email": "shubham@gmail.com",
+            "password": "$2a$10$dUPbgEwyb9x361T.Sj.X8uohT/1kr1CosT8cMc5fqsCFiNIwZnIdm",
+            "uniqueId": "emp123",
+            "organisationName": "##################",
+            "__v": 0
+        }
+    ],
+    "totalPages": 9,
+    "currentPage": 3
+}
+
+
+-------------------------------------------------------------------------------------------------------------------------
